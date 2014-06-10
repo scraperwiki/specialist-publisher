@@ -7,6 +7,10 @@ $LOAD_PATH << File.dirname(__FILE__)
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
+require 'simplecov'
+SimpleCov.start
+SimpleCov.refuse_coverage_drop
+
 require "cucumber/rails"
 require "webmock/cucumber"
 WebMock.disable_net_connect!

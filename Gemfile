@@ -47,6 +47,7 @@ group :test do
   gem "poltergeist", "1.5.0"
   gem "webmock", "~> 1.17.4"
   gem "rubocop"
+  gem "simplecov", require: false
 end
 
 group :development, :test do
