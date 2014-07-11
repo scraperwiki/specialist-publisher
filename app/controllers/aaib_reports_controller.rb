@@ -86,6 +86,14 @@ protected
   end
 
   def document_params
-    params.fetch("aaib_report", {})
+    report_params = params.fetch("aaib_report", {})
+    report_params["aircraft_category"] = filter_blank_multi_select(report_params["aircraft_category"])
+    report_params
+    # This is bad! Rewrite it!
+  end
+
+  # See http://stackoverflow.com/questions/8929230/why-is-the-first-element-always-blank-in-my-rails-multi-select
+  def filter_blank_multi_select(values)
+    values.is_a?(Array) ? values.reject(&:blank?) : values
   end
 end
