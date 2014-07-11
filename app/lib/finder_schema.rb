@@ -15,6 +15,14 @@ class FinderSchema
     allowed_values_as_option_tuples(allowed_values_for(facet_name))
   end
 
+  def label_for_facet_value(facet, values)
+    Array(values).map do |value|
+      if allowed_values_for(facet).any?
+        allowed_values_for(facet).select { |option| option['value'] == value}.first.fetch("label")
+      end
+    end
+  end
+
 private
   def schema
     @schema ||= MultiJson.load(File.read(@schema_path))

@@ -72,7 +72,7 @@ class CmaCasesController < ApplicationController
 protected
 
   def form_object_for(document)
-    CmaCaseForm.new(document)
+    CmaCaseForm.new(document, finder_schema)
   end
 
   def authorize_user
@@ -88,4 +88,9 @@ protected
   def document_params
     params.fetch("specialist_document", {})
   end
+
+  def finder_schema
+    SpecialistPublisherWiring.get(:cma_case_finder_schema)
+  end
+  helper_method :finder_schema
 end

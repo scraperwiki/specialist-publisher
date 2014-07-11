@@ -72,7 +72,7 @@ class AaibReportsController < ApplicationController
 protected
 
   def form_object_for(document)
-    AaibReportForm.new(document)
+    AaibReportForm.new(document, finder_schema)
   end
 
   def authorize_user
@@ -96,4 +96,9 @@ protected
   def filter_blank_multi_select(values)
     values.is_a?(Array) ? values.reject(&:blank?) : values
   end
+
+  def finder_schema
+    SpecialistPublisherWiring.get(:aaib_report_finder_schema)
+  end
+  helper_method :finder_schema
 end

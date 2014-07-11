@@ -163,6 +163,7 @@ SpecialistPublisherWiring = DependencyContainer.new do
               *args,
             ),
           ),
+          get(:cma_case_finder_schema),
         ),
       )
     }
@@ -186,7 +187,8 @@ SpecialistPublisherWiring = DependencyContainer.new do
               get(:edition_factory),
               *args,
             )
-          )
+          ),
+          get(:aaib_report_finder_schema)
         ),
       )
     }

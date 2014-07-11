@@ -15,8 +15,9 @@ class DocumentForm < SimpleDelegator
     ActiveModel::Name.new(self, nil, "SpecialistDocument")
   end
 
-  def initialize(document)
+  def initialize(document, finder_schema)
     @document = document
+    @finder_schema = finder_schema
     super(document)
   end
 
@@ -38,13 +39,9 @@ class DocumentForm < SimpleDelegator
 
 private
 
-  attr_reader :document
+  attr_reader :document, :finder_schema
 
   def delegate_if_document_exists(attribute_name)
     document && document.public_send(attribute_name)
-  end
-
-  def finder_schema
-    raise NotImplementedError
   end
 end
