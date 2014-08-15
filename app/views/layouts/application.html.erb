@@ -17,6 +17,10 @@
   <% if user_can_edit_international_development_funds? %>
     <li><%= nav_link_to 'International Development Funds', '/international-development-funds' %></li>
   <% end -%>
+  <% if user_can_edit_medical_safety_alerts? %>
+    <li><%= nav_link_to 'Medical Safety Alerts', '/medical-safety-alerts' %></li>
+  <% end -%>
+
 <% end %>
 
 <% content_for :navbar_right do %>

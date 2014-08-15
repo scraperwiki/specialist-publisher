@@ -32,6 +32,11 @@ class ApplicationController < ActionController::Base
   end
   helper_method :user_can_edit_international_development_funds?
 
+  def user_can_edit_medical_safety_alerts?
+    current_user_can_edit?("medical_safety_alert")
+  end
+  helper_method :user_can_edit_medical_safety_alerts?
+
   def current_user_can_edit?(format)
     permission_checker.can_edit?(format)
   end
