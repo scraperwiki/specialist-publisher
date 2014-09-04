@@ -52,15 +52,20 @@ Start the VM with `vagrant up` and SSH in with `vagrant SSH`.
 
 ### Hosts
 
-Modify `/etc/hosts` with:
+`/etc/hosts` currently looks like
 
 ```
-10.1.1.254 specialist-publisher.dev.gov.uk
+192.168.9.110   github.gds
+10.1.1.254      specialist-publisher.dev.gov.uk
+10.1.1.254      specialist-frontend.dev.gov.uk
+10.1.1.254      static.dev.gov.uk
+10.1.1.254      contentapi.dev.gov.uk
+10.1.1.254      rummager.dev.gov.uk
+10.1.1.254      panopticon.dev.gov.uk
+10.1.1.254      www.dev.gov.uk
+10.1.1.254      assets-origin.dev.gov.uk
+10.1.1.254      dev.gov.uk
 ```
-
-### Starting specialist-publisher and dependencies
-
-Run `startup.sh` in each folder in /var/govuk
 
 ### Importing documents
 
@@ -83,9 +88,9 @@ start importing the reports as draft.
 Visit `specialist-publisher.dev.gov.uk`. Click on a draft publication
 and click "Publish".
 
-You need to be running Panopticon to work without error.
+You need to be running Panopticon for this to work without error.
 
-Note that this command:
+(Note that this command:
 
 `PLEK_SERVICE_WHITEHALL_ADMIN_URI=https://www.gov.uk/ bundle exec rake
 organisations:import`
@@ -94,9 +99,130 @@ must be run before trying this, else you get an error of:
 
 `Tag::MissingTags in ArtefactsController#update`
 
-If you've done that and are **not** running Rummager, you'll get a 502
-Bad Gateway with url: `http://search.dev.gov.uk/documents`
+- not sure if this part of the documentation is still needed; starting
+  using `bowl` is easiest.)
 
-### Viewing documents
+We also had to install a whole host of other repositories to get things
+working:
 
-**TODO: update**
+* [`asset-manager`](https://github.com/alphagov/asset-manager)
+* `development` (from enterprise GitHub),
+* [`fact-cave`](https://github.com/alphagov/fact-cave)
+* [`finder-api`](https://github.com/alphagov/finder-api)
+* [`govuk_content_api`](https://github.com/alphagov/govuk_content_api)
+* [`imminence`](https://github.com/alphagov/imminence)
+* [`specialist-frontend`](https://github.com/alphagov/specialist-frontend)
+* [`static`](https://github.com/alphagov/static)
+
+On installing them, you need to do `bundle install`.
+
+You may also need to do `bundle exec rake db:migrate`
+
+The `development` repository lets you do:
+
+`bowl specialist-publisher specialist-frontend`
+
+This starts all the dependencies: you don't need to run them
+individually.
+
+You can also run all the dependencies minus some e.g.
+
+`bowl specialist-publisher --without-specialist-publisher` (not sure of
+exact syntax of the `without`)
+
+If you have started some of the dependencies manually, `bowl` may fail
+due to them already running. The error code then terminates all the
+processes that it has started. To fix, the quick, brutal way is `killall
+-9 ruby`.
+
+#### Updating local repos
+
+`git fetch` and `git rebase` then do `bundle install` in case of new
+dependencies. You may also need to do `bundle exec rake db:migrate` if
+you see that there are changes in `db:migrate` (not entirely sure where
+you see these mentions).
+
+#### Running tests
+
+`bundle exec ruby` (Where?)
+
+`bundle exec cucumber --profile build` (Are the `cucumber` tests run as
+part of the `bundle exec ruby` command?)
+
+#### Incorrect attachment links
+
+We had an issue where attachment links weren't generated correctly in
+the published reports. They were just redirecting to the report page.
+
+This was something to do with a missing bearer token or no gds-test
+user perhaps?
+
+Fixed by commenting out `before_filter :require_signin_permission!` in
+`asset-manager`.
+
+The link itself still won't work, but if it has a download icon by it,
+then everything should be OK.
+
+#### Bulk republishing documents
+
+Run `specialist-publisher/lib/document_republisher.rb`.
+
+Can specify the type of report to republish, e.g. CMA, AAIB.
+
+e.g. `document_republisher.rb aaib_reports`
+
+#### Bulk publishing documents
+
+There's no script to do this automatically. GDS don't yet have a use
+case for it (though they may in future). It *may* be possible to edit
+`lib/document_republisher.rb` to remove the select statement from the
+`repo.all.lazy.select(&:published?) line.
+
+#### Clearing out documents
+
+To get rid of documents, could do:
+```
+Artefact.all.map(&:destroy)
+SpecialistDocumentEdition.all.map(&:destroy)
+RenderedSpecialistDocument.all.map(&:destroy)
+```
+
+You can actually use `destroy_all` rather than do `map(&:destroy)`.
+
+In `specialist_publisher`, `bundle exec rake dev:clear_documents` is a
+script that does (I think):
+
+```
+Artefact.destroy_all
+SpecialistDocumentEdition.destroy_all
+RenderedSpecialistDocument.destroy_all`
+```
+
+(The script may live in `/lib/tasks`; need to check.)
+
+#### Document types
+
+* `Artefact` is an entity that belongs to `panopticon` (not sure
+  exactly); 
+* `RenderedSpecialistDocument` is a published document;
+* `SpecialistDocumentEdition` is a little bit like a version of a
+document, you can have different editions of the same document.
+
+If you modify a draft, it modifies the current edition. If you modify a
+published document, it creates a new edition.
+
+#### Viewing documents
+
+Once you've published a document, you get a link to it. However, in our
+setup, it redirects to `www.dev.gov.uk` which is broken for reasons
+unknown (not sure if specific to our VM). The actual domain is
+`specialist-frontend.dev.gov.uk`.
+
+#### Other useful things to know
+
+* Run `bundle exec rake -T` to list all `rake` tasks.
+* Can open a console in `specialist-publisher` directory; use `bundle exec
+  rails console`.
+* Debugging: add `require "binding.pry"; binding.pry` where you want the
+  code to stop. It sets a breakpoint where you can inspect the code
+  state.
