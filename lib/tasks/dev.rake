@@ -18,4 +18,11 @@ namespace :dev do
     logger.info "That's it! Everything should be working fine."
     logger.info "Now run all the tests using 'bundle exec rake'."
   end
+
+  desc "Clear out all document data"
+  task :clear_documents => :environment do
+    Artefact.destroy_all
+    RenderedSpecialistDocument.destroy_all
+    SpecialistDocumentEdition.destroy_all
+  end
 end
