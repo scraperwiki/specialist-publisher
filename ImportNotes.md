@@ -88,25 +88,13 @@ start importing the reports as draft.
 Visit `specialist-publisher.dev.gov.uk`. Click on a draft publication
 and click "Publish".
 
-You need to be running Panopticon for this to work without error.
-
-(Note that this command:
-
-`PLEK_SERVICE_WHITEHALL_ADMIN_URI=https://www.gov.uk/ bundle exec rake
-organisations:import`
-
-must be run before trying this, else you get an error of:
-
-`Tag::MissingTags in ArtefactsController#update`
-
-- not sure if this part of the documentation is still needed; starting
-  using `bowl` is easiest.)
+### Viewing documents in the VM
 
 We also had to install a whole host of other repositories to get things
-working:
+working for viewing and publishing documents:
 
 * [`asset-manager`](https://github.com/alphagov/asset-manager)
-* `development` (from enterprise GitHub),
+* `development` (from GDS enterprise GitHub),
 * [`fact-cave`](https://github.com/alphagov/fact-cave)
 * [`finder-api`](https://github.com/alphagov/finder-api)
 * [`govuk_content_api`](https://github.com/alphagov/govuk_content_api)
@@ -189,8 +177,9 @@ RenderedSpecialistDocument.all.map(&:destroy)
 
 You can actually use `destroy_all` rather than do `map(&:destroy)`.
 
-In `specialist_publisher`, `bundle exec rake dev:clear_documents` is a
-script that does (I think):
+In the ScraperWiki `specialist_publisher` branch,
+`add-clear-documents-rake-task` contains a script that allows you to
+`bundle exec rake dev:clear_documents` is a script that does (I think):
 
 ```
 Artefact.destroy_all
@@ -198,7 +187,7 @@ SpecialistDocumentEdition.destroy_all
 RenderedSpecialistDocument.destroy_all`
 ```
 
-(The script may live in `/lib/tasks`; need to check.)
+(The script lives in `/lib/tasks/dev.rake`.)
 
 #### Document types
 
