@@ -1,6 +1,6 @@
 require "builders/specialist_document_builder"
 
-class DrugSafetyUpdateReportBuilder < SpecialistDocumentBuilder
+class DrugSafetyUpdateBuilder < SpecialistDocumentBuilder
 
   def call(attrs)
     super(
