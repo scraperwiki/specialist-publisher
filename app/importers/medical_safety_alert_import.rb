@@ -76,11 +76,11 @@ module MedicalSafetyAlertImport
     def report_builder
       MedicalSafetyAlertBuilder.new(
         ->(*args) {
-          SlugUniquenessValidator.new(
-            repo,
-            null_validator(
-              SpecialistPublisherWiring.get(:medical_safety_alert_factory).call(*args),
-            )
+          null_validator(
+            SpecialistPublisherWiring
+            .get(:validatable_entity_factories)
+            .medical_safety_alert_factory
+            .call(*args)
           )
         },
         IdGenerator,
@@ -88,7 +88,7 @@ module MedicalSafetyAlertImport
     end
 
     def repo
-      SpecialistPublisherWiring.get(:medical_safety_alert_repository)
+      SpecialistPublisherWiring.get(:repository_registry).medical_safety_alert_repository
     end
 
     def null_validator(thing)
