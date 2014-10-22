@@ -33,6 +33,7 @@ module MedicalSafetyAlertImport
         title
         alert_type
         medical_specialism
+        issued_date
       )
     end
   end
