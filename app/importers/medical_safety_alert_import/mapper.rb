@@ -31,7 +31,7 @@ module MedicalSafetyAlertImport
       %w(
         body
         title
-	alert_type
+        alert_type
         medical_specialism
       )
     end
