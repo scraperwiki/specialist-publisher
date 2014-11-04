@@ -26,7 +26,7 @@ require "specialist_document_repository"
 require "repository_registry"
 require "document_factory_registry"
 require "view_adapter_registry"
-
+require_relative "../models/builders/specialist_document_builder"
 $LOAD_PATH.unshift(File.expand_path("../..", "app/services"))
 
 SpecialistPublisherWiring = DependencyContainer.new do

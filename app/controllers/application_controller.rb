@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_can_withdraw?
 
   def current_user_is_gds_editor?
-    permission_checker.is_gds_editor?
+    #permission_checker.is_gds_editor?
   end
   helper_method :current_user_is_gds_editor?
 
