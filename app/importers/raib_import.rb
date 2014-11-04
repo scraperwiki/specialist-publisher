@@ -1,5 +1,7 @@
 require "raib_import/mapper"
 require "raib_import/attachment_mapper"
+require "document_import"
+require_relative "../models/builders/specialist_document_builder"
 
 module RaibImport
   def self.call(data_files_dir, attachments_dir)
